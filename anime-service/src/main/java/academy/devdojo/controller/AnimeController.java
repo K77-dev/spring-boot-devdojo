@@ -34,7 +34,7 @@ public class AnimeController {
     @GetMapping("/{id}")
     public Anime findById(@PathVariable Long id){
         return Anime.getAnimes().stream()
-                .filter(n -> n.getId().equals(id))
+                .filter( n -> n.getId().equals(id))
                 .findFirst().orElse(null);
     }
 }

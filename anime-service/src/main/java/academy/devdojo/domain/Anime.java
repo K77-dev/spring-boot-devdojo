@@ -1,18 +1,15 @@
 package academy.devdojo.domain;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class Anime {
     private Long id;
     private String name;
-
-    public Anime(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public static List<Anime> getAnimes() {
         return List.of(
@@ -21,5 +18,4 @@ public class Anime {
                 new Anime(3L, "Dragon Ball")
         );
     }
-
 }
