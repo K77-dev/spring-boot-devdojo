@@ -1,6 +1,7 @@
 package academy.devdojo.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,9 +22,17 @@ public class HeroController {
     public List<String> listAllParam(@RequestParam(required = false, defaultValue = "") String name) {
         return HEROES.stream().filter(n -> n.equalsIgnoreCase(name)).toList();
     }
-
+    
     @GetMapping("filterList")
     public List<String> listAllParamList(@RequestParam List<String> names) {
         return HEROES.stream().filter(names::contains).toList();
+    }
+    
+    @GetMapping("{name}")
+    public String findByName(@PathVariable String name) {
+        return HEROES
+        .stream()
+        .filter(n -> n.equalsIgnoreCase(name))
+        .findFirst().orElse("");
     }
 }
