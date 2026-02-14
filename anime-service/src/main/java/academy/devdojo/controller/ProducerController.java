@@ -26,22 +26,41 @@ public class ProducerController {
     }
 
     @GetMapping
-    public List<Producer> listAll() {
-        return Producer.getProducers();
+    public ResponseEntity<List<ProducerGetResponse>> listAll() {
+        log.debug("Request received to list all producers");
+
+        var response = Producer.getProducers()
+                .stream()
+                .map(MAPPER::toProduceGetResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("filter")
-    public List<Producer> filter(@RequestParam String name){
-        return Producer.getProducers().stream()
+    public ResponseEntity<ProducerGetResponse> filter(@RequestParam String name){
+        log.debug("Request received to list all producers, param name '{}'", name);
+
+        var response = Producer.getProducers().stream()
                 .filter(n -> n.getName().equalsIgnoreCase(name))
-                .toList();
+                .findFirst()
+                .map(MAPPER::toProduceGetResponse)
+                .orElse(null);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public Producer findById(@PathVariable Long id){
-        return Producer.getProducers().stream()
+    public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id){
+        log.debug("Request to find producer by id: {}", id);
+
+        var response = Producer.getProducers().stream()
                 .filter( n -> n.getId().equals(id))
-                .findFirst().orElse(null);
+                .findFirst()
+                .map(MAPPER::toProduceGetResponse)
+                .orElse(null);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
