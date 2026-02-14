@@ -46,9 +46,12 @@ public class ProducerController {
 
     @PostMapping
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
+        log.debug("Request to save producer: {}", producerPostRequest);
+
         var producer = MAPPER.toProducerPostRequest(producerPostRequest);
         var response = MAPPER.toProduceGetResponse(producer);
         Producer.getProducers().add(producer);
+
         return ResponseEntity.ok(response);
     }
 }
