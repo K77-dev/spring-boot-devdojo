@@ -16,7 +16,6 @@ public class Producer {
     private Long id;
     private String name;
     private LocalDateTime createdAt;
-    private String address;
     @Getter
     private static List<Producer> producers = new ArrayList<>();
 

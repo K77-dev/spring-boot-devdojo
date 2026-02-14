@@ -1,22 +1,22 @@
 package academy.devdojo.controller;
 
 import academy.devdojo.domain.Producer;
+import academy.devdojo.mapper.ProducerMapper;
 import academy.devdojo.request.ProducerPostRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("v1/producers")
 @Slf4j
 public class ProducerController {
+
+    private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
 
     @GetMapping("virtualThreads")
     public List<String> listAllVirtualThreads() throws InterruptedException {
@@ -46,18 +46,9 @@ public class ProducerController {
 
     @PostMapping
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
-        var producer = Producer.builder()
-                .id(ThreadLocalRandom.current().nextLong(1000_000))
-                .name(producerPostRequest.getName())
-                .createdAt(LocalDateTime.now())
-                .build();
+        var producer = MAPPER.toProducerPostRequest(producerPostRequest);
+        var response = MAPPER.toProduceGetResponse(producer);
         Producer.getProducers().add(producer);
-
-        var response = ProducerGetResponse.builder()
-                .id(producer.getId())
-                .name(producer.getName())
-                .createAt(producer.getCreatedAt())
-                .build();
         return ResponseEntity.ok(response);
     }
 }
