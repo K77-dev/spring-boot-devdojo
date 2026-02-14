@@ -49,7 +49,7 @@ public class AnimeController {
                 .filter(n -> n.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .map(MAPPER::toAnimeGetResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found!"));
 
         return ResponseEntity.ok(response);
     }
@@ -62,7 +62,7 @@ public class AnimeController {
                 .filter( n -> n.getId().equals(id))
                 .findFirst()
                 .map(MAPPER::toAnimeGetResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found!"));
 
         return ResponseEntity.ok(response);
     }
@@ -76,5 +76,17 @@ public class AnimeController {
         Anime.getAnimes().add(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        log.debug("Request to delete anime by id: {}", id);
+
+        var anime = Anime.getAnimes().stream()
+                .filter( n -> n.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found!"));
+        Anime.getAnimes().remove(anime);
+        return ResponseEntity.noContent().build();
     }
 }
