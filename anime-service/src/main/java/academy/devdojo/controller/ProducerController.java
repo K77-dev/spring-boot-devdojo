@@ -6,6 +6,7 @@ import academy.devdojo.request.ProducerPostRequest;
 import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import academy.devdojo.response.ProducerPostResponse;
+import academy.devdojo.service.ProducerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,12 @@ public class ProducerController {
 
     private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
 
+    private ProducerService service;
+
+    public ProducerController() {
+        this.service = new ProducerService();
+    }
+
     @GetMapping("virtualThreads")
     public List<String> listAllVirtualThreads() throws InterruptedException {
         log.info(Thread.currentThread().getName());
@@ -33,47 +40,39 @@ public class ProducerController {
     public ResponseEntity<List<ProducerGetResponse>> listAll() {
         log.debug("Request received to list all producers");
 
-        var response = Producer.getProducers()
-                .stream()
-                .map(MAPPER::toProducerGetResponse)
-                .toList();
+        var producers = service.findAll();
+        var producerGetResponseList = MAPPER.toProducerGetResponseList(producers);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(producerGetResponseList);
     }
 
     @GetMapping("filter")
-    public ResponseEntity<ProducerGetResponse> filter(@RequestParam String name){
+    public ResponseEntity<List<ProducerGetResponse>> findByName(@RequestParam String name){
         log.debug("Request received to list all producers, param name '{}'", name);
 
-        var response = Producer.getProducers().stream()
-                .filter(n -> n.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .map(MAPPER::toProducerGetResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
+        var producers = service.findByName(name);
+        var producerGetResponseList = MAPPER.toProducerGetResponseList(producers);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(producerGetResponseList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id){
         log.debug("Request to find producer by id: {}", id);
 
-        var response = Producer.getProducers().stream()
-                .filter( n -> n.getId().equals(id))
-                .findFirst()
-                .map(MAPPER::toProducerGetResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
+        var producer = service.findById(id);
+        var producerGetResponse = MAPPER.toProducerGetResponse(producer);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(producerGetResponse);
     }
 
     @PostMapping
-    public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
+    public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
         log.debug("Request to save producer: {}", producerPostRequest);
 
         var producer = MAPPER.toProducer(producerPostRequest);
-        var response = MAPPER.toProducerPostResponse(producer);
-        Producer.getProducers().add(producer);
+        service.save(producer);
+        var response = MAPPER.toProducerGetResponse(producer);
 
         return ResponseEntity.ok(response);
     }
@@ -82,12 +81,9 @@ public class ProducerController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id){
         log.debug("Request to delete producer by id: {}", id);
 
-        var producer = Producer.getProducers().stream()
-                .filter( n -> n.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
+        var producer = service.findById(id);
+        service.delete(producer.getId());
 
-        Producer.getProducers().remove(producer);
         return ResponseEntity.noContent().build();
     }
 
@@ -95,14 +91,8 @@ public class ProducerController {
     public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest){
         log.debug("Request to update producer: {}", producerPutRequest);
 
-        var producer = Producer.getProducers().stream()
-                .filter( n -> n.getId().equals(producerPutRequest.getId()))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
-        Producer.getProducers().remove(producer);
-
-        var request = MAPPER.toProducer(producerPutRequest, producer.getCreatedAt());
-        Producer.getProducers().add(request);
+        var request = MAPPER.toProducer(producerPutRequest);
+        service.update(request);
 
         return ResponseEntity.noContent().build();
     }
