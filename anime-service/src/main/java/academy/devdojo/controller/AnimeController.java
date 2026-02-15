@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 public class AnimeController {
-    private static final AnimeMapper MAPPER = AnimeMapper.INSTANCE;
+
+    private final AnimeMapper mapper;
     private final AnimeService service;
 
     @GetMapping("virtualThreads")
@@ -35,7 +36,7 @@ public class AnimeController {
         log.debug("Request received to list all animes");
 
         var anime = service.findAll();
-        var response = MAPPER.toAnimeGetResponseList(anime);
+        var response = mapper.toAnimeGetResponseList(anime);
 
         return ResponseEntity.ok(response);
     }
@@ -45,7 +46,7 @@ public class AnimeController {
         log.debug("Request received to list all animes, param name '{}'", name);
 
         var anime = service.findByName(name);
-        var response = MAPPER.toAnimeGetResponseList(anime);
+        var response = mapper.toAnimeGetResponseList(anime);
 
         return ResponseEntity.ok(response);
     }
@@ -55,7 +56,7 @@ public class AnimeController {
         log.debug("Request to find anime by id: {}", id);
 
         var anime = service.findById(id);
-        var response = MAPPER.toAnimeGetResponse(anime);
+        var response = mapper.toAnimeGetResponse(anime);
 
         return ResponseEntity.ok(response);
     }
@@ -64,9 +65,9 @@ public class AnimeController {
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest){
         log.debug("Request to save anime: {}", animePostRequest);
 
-        var anime = MAPPER.toAnime(animePostRequest);
+        var anime = mapper.toAnime(animePostRequest);
         service.save(anime);
-        var response = MAPPER.toAnimePostResponse(anime);
+        var response = mapper.toAnimePostResponse(anime);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -85,7 +86,7 @@ public class AnimeController {
     public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest){
         log.debug("Request to update anime: {}", animePutRequest);
 
-        var anime = MAPPER.toAnime(animePutRequest);
+        var anime = mapper.toAnime(animePutRequest);
         service.update(anime);
 
         return ResponseEntity.noContent().build();
