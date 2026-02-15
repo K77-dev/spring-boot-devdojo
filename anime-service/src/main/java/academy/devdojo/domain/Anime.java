@@ -1,16 +1,13 @@
 package academy.devdojo.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Anime {
     @EqualsAndHashCode.Include

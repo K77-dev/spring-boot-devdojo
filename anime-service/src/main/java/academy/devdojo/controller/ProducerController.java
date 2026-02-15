@@ -41,9 +41,9 @@ public class ProducerController {
         log.debug("Request received to list all producers");
 
         var producers = service.findAll();
-        var producerGetResponseList = MAPPER.toProducerGetResponseList(producers);
+        var response = MAPPER.toProducerGetResponseList(producers);
 
-        return ResponseEntity.ok(producerGetResponseList);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("filter")
@@ -51,9 +51,9 @@ public class ProducerController {
         log.debug("Request received to list all producers, param name '{}'", name);
 
         var producers = service.findByName(name);
-        var producerGetResponseList = MAPPER.toProducerGetResponseList(producers);
+        var response = MAPPER.toProducerGetResponseList(producers);
 
-        return ResponseEntity.ok(producerGetResponseList);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
@@ -61,9 +61,9 @@ public class ProducerController {
         log.debug("Request to find producer by id: {}", id);
 
         var producer = service.findById(id);
-        var producerGetResponse = MAPPER.toProducerGetResponse(producer);
+        var response = MAPPER.toProducerGetResponse(producer);
 
-        return ResponseEntity.ok(producerGetResponse);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
@@ -91,8 +91,8 @@ public class ProducerController {
     public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest){
         log.debug("Request to update producer: {}", producerPutRequest);
 
-        var request = MAPPER.toProducer(producerPutRequest);
-        service.update(request);
+        var producer = MAPPER.toProducer(producerPutRequest);
+        service.update(producer);
 
         return ResponseEntity.noContent().build();
     }
