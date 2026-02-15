@@ -1,17 +1,16 @@
 package academy.devdojo.controller;
 
-import academy.devdojo.domain.Anime;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
 import academy.devdojo.request.AnimePutRequest;
 import academy.devdojo.response.AnimeGetResponse;
 import academy.devdojo.response.AnimePostResponse;
 import academy.devdojo.service.AnimeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -19,13 +18,10 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("v1/animes")
 @Slf4j
+@RequiredArgsConstructor
 public class AnimeController {
     private static final AnimeMapper MAPPER = AnimeMapper.INSTANCE;
-    private AnimeService service;
-
-    public AnimeController() {
-        this.service = new AnimeService();
-    }
+    private final AnimeService service;
 
     @GetMapping("virtualThreads")
     public List<String> listAllVirtualThreads() throws InterruptedException {

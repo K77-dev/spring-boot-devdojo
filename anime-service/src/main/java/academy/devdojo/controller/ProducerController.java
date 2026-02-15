@@ -7,6 +7,7 @@ import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
 import academy.devdojo.response.ProducerPostResponse;
 import academy.devdojo.service.ProducerService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,12 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("v1/producers")
 @Slf4j
+@RequiredArgsConstructor
 public class ProducerController {
 
     private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
 
-    private ProducerService service;
-
-    public ProducerController() {
-        this.service = new ProducerService();
-    }
+    private final ProducerService service;
 
     @GetMapping("virtualThreads")
     public List<String> listAllVirtualThreads() throws InterruptedException {
