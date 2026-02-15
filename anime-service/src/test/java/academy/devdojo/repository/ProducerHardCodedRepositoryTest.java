@@ -34,14 +34,37 @@ class ProducerHardCodedRepositoryTest  {
                         Producer.builder().id(3L).name("Studio Guibli ").createdAt(LocalDateTime.now()).build()
                 )
         );
-        BDDMockito.when( producerData.getProducers()).thenReturn(producers);
+        BDDMockito.when(producerData.getProducers()).thenReturn(producers);
     }
 
     @Test
     @DisplayName("findAll return a list with all producers")
     void findAll(){
-
         var producers = repository.findAll();
-        Assertions.assertThat(producers).isNotNull().hasSize(producers.size() );
+        Assertions.assertThat(producers).isNotNull().hasSameElementsAs(producers);
+    }
+
+    @Test
+    @DisplayName("findById returns producer with a given Id")
+    void findById(){
+        var exprectedProducer  = producers.getFirst();
+        var producers = repository.findById(exprectedProducer.getId());
+        Assertions.assertThat(producers).contains(exprectedProducer);
+    }
+
+    @Test
+    @DisplayName("findByName returns producer with a given Name")
+    void findByName(){
+        var exprectedProducer  = producers.getFirst();
+        var producers = repository.findByName(exprectedProducer.getName());
+        Assertions.assertThat(producers).contains(exprectedProducer);
+    }
+
+    @Test
+    @DisplayName("findByName returns producer with a given Name")
+    void save(){
+        var exprectedProducer  = producers.getFirst();
+        var producers = repository.findByName(exprectedProducer.getName());
+        Assertions.assertThat(producers).contains(exprectedProducer);
     }
 }
