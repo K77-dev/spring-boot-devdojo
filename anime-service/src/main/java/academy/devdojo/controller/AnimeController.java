@@ -3,6 +3,7 @@ package academy.devdojo.controller;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.mapper.AnimeMapper;
 import academy.devdojo.request.AnimePostRequest;
+import academy.devdojo.request.AnimePutRequest;
 import academy.devdojo.response.AnimeGetResponse;
 import academy.devdojo.response.AnimePostResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -71,7 +71,7 @@ public class AnimeController {
     public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest){
         log.debug("Request to save anime: {}", animePostRequest);
 
-        var request = MAPPER.toAnimePostRequest(animePostRequest);
+        var request = MAPPER.toAnime(animePostRequest);
         var response = MAPPER.toAnimePostResponse(request);
         Anime.getAnimes().add(request);
 
@@ -87,6 +87,22 @@ public class AnimeController {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found!"));
         Anime.getAnimes().remove(anime);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest){
+        log.debug("Request to update anime: {}", animePutRequest);
+
+        var anime = Anime.getAnimes().stream()
+                .filter( n -> n.getId().equals(animePutRequest.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found!"));
+        Anime.getAnimes().remove(anime);
+
+        var request = MAPPER.toAnime(animePutRequest);
+        Anime.getAnimes().add(request);
+
         return ResponseEntity.noContent().build();
     }
 }

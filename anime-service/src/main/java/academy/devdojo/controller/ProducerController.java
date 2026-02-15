@@ -3,7 +3,9 @@ package academy.devdojo.controller;
 import academy.devdojo.domain.Producer;
 import academy.devdojo.mapper.ProducerMapper;
 import academy.devdojo.request.ProducerPostRequest;
+import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
+import academy.devdojo.response.ProducerPostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ public class ProducerController {
 
         var response = Producer.getProducers()
                 .stream()
-                .map(MAPPER::toProduceGetResponse)
+                .map(MAPPER::toProducerGetResponse)
                 .toList();
 
         return ResponseEntity.ok(response);
@@ -46,7 +48,7 @@ public class ProducerController {
         var response = Producer.getProducers().stream()
                 .filter(n -> n.getName().equalsIgnoreCase(name))
                 .findFirst()
-                .map(MAPPER::toProduceGetResponse)
+                .map(MAPPER::toProducerGetResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
 
         return ResponseEntity.ok(response);
@@ -59,18 +61,18 @@ public class ProducerController {
         var response = Producer.getProducers().stream()
                 .filter( n -> n.getId().equals(id))
                 .findFirst()
-                .map(MAPPER::toProduceGetResponse)
+                .map(MAPPER::toProducerGetResponse)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
+    public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
         log.debug("Request to save producer: {}", producerPostRequest);
 
-        var producer = MAPPER.toProducerPostRequest(producerPostRequest);
-        var response = MAPPER.toProduceGetResponse(producer);
+        var producer = MAPPER.toProducer(producerPostRequest);
+        var response = MAPPER.toProducerPostResponse(producer);
         Producer.getProducers().add(producer);
 
         return ResponseEntity.ok(response);
@@ -86,6 +88,22 @@ public class ProducerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
 
         Producer.getProducers().remove(producer);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest){
+        log.debug("Request to update producer: {}", producerPutRequest);
+
+        var producer = Producer.getProducers().stream()
+                .filter( n -> n.getId().equals(producerPutRequest.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
+        Producer.getProducers().remove(producer);
+
+        var request = MAPPER.toProducer(producerPutRequest, producer.getCreatedAt());
+        Producer.getProducers().add(request);
+
         return ResponseEntity.noContent().build();
     }
 }
