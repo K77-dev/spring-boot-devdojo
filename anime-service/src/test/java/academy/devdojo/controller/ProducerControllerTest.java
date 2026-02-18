@@ -6,7 +6,6 @@ import academy.devdojo.repository.ProducerHardCodedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +138,65 @@ class ProducerControllerTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("PUT v1/producers/ - Update producer")
+    void update() throws Exception {
+        var request = readResourceFile("producer/producer-put-update-request.json");
+
+        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/v1/producers")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("PUT v1/producers/ - Update producer where producer is not found")
+    void updateWhenProducerIsNotFound() throws Exception {
+        var request = readResourceFile("producer/producer-put-update-request-404.json");
+
+        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/v1/producers")
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+    }
+
+    @Test
+    @DisplayName("\"PUT v1/producers/1 - Delete producer")
+    void delete() throws Exception {
+        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+
+        var id = producersList.getFirst().getId();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/v1/producers/{id}", id)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("\"PUT v1/producers/1 - Delete producer where producer is not found")
+    void delete_WhenProducerIsNotFound() throws Exception {
+        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/v1/producers/{id}", 999L)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
     }
 
 
