@@ -4,9 +4,11 @@ import academy.devdojo.mapper.ProducerMapper;
 import academy.devdojo.request.ProducerPostRequest;
 import academy.devdojo.request.ProducerPutRequest;
 import academy.devdojo.response.ProducerGetResponse;
+import academy.devdojo.response.ProducerPostResponse;
 import academy.devdojo.service.ProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,14 +62,14 @@ public class ProducerController {
     }
 
     @PostMapping
-    public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
+    public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest){
         log.debug("Request to save producer: {}", producerPostRequest);
 
         var producer = mapper.toProducer(producerPostRequest);
-        service.save(producer);
-        var response = mapper.toProducerGetResponse(producer);
+        var producerSaved = service.save(producer);
+        var response = mapper.toProducerPostResponse(producerSaved);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status (HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
