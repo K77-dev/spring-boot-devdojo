@@ -1,5 +1,6 @@
 package academy.devdojo.repository;
 
+import academy.devdojo.commons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,20 +21,18 @@ class AnimeHardCodedRepositoryTest {
     @InjectMocks
     private AnimeHardCodedRepository repository;
 
+    @InjectMocks
+    private AnimeUtils animeUtils;
+
     @Mock
     private AnimeData animeData;
-    private final List<Anime> animesDataList = new ArrayList<>();
+
+    private List<Anime> animeList;
 
     @BeforeEach
     void init(){
-        animesDataList.addAll(
-                List.of(
-                        Anime.builder().id(1L).name("Naruto").build(),
-                        Anime.builder().id(2L).name("Goku").build(),
-                        Anime.builder().id(3L).name("One Piece").build()
-                )
-        );
-        BDDMockito.when(animeData.getAnimes()).thenReturn(animesDataList);
+        animeList = new ArrayList<>(animeUtils.createAnimeList());
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animeList);
     }
 
     @Test
@@ -41,13 +40,13 @@ class AnimeHardCodedRepositoryTest {
     void findAll(){
         var animes = repository.findAll();
 
-        Assertions.assertThat(animesDataList).isNotNull().hasSameElementsAs(animes);
+        Assertions.assertThat(animeList).isNotNull().hasSameElementsAs(animes);
     }
 
     @Test
     @DisplayName("findById returns anime with a given Id")
     void findById(){
-        var exprectedAnime  = animesDataList.getFirst();
+        var exprectedAnime  = animeList.getFirst();
         var animes = repository.findById(exprectedAnime.getId());
 
         Assertions.assertThat(animes).contains(exprectedAnime);
@@ -56,7 +55,7 @@ class AnimeHardCodedRepositoryTest {
     @Test
     @DisplayName("findByName returns anime with a given Name")
     void findByName(){
-        var exprectedAnime  = animesDataList.getFirst();
+        var exprectedAnime  = animeList.getFirst();
         var animes = repository.findByName(exprectedAnime.getName());
 
         Assertions.assertThat(animes).contains(exprectedAnime);
@@ -65,7 +64,7 @@ class AnimeHardCodedRepositoryTest {
     @Test
     @DisplayName("findByName returns anime with a given Name")
     void save(){
-        var animeToSave = Anime.builder().id(99L).name("DIFFERS").build();
+        var animeToSave = animeUtils.newAnimeToSave();
         var anime = repository.save(animeToSave);
         Assertions.assertThat(anime).isEqualTo(animeToSave).hasNoNullFieldsOrProperties();
 
@@ -76,20 +75,20 @@ class AnimeHardCodedRepositoryTest {
     @Test
     @DisplayName("delete removes a anime")
     void delete(){
-         var animeToDelete  = animesDataList.getFirst();
+         var animeToDelete  = animeList.getFirst();
         repository.delete(animeToDelete);
 
-        Assertions.assertThat(animesDataList).doesNotContain(animeToDelete);
+        Assertions.assertThat(animeList).doesNotContain(animeToDelete);
     }
 
     @Test
     @DisplayName("update a anime")
     void update(){
-        var animeToUpdate = animesDataList.getFirst();
+        var animeToUpdate = animeList.getFirst();
         animeToUpdate.setName("Driffers");
         repository.update(animeToUpdate );
 
-        Assertions.assertThat(animesDataList).contains(animeToUpdate);
+        Assertions.assertThat(animeList).contains(animeToUpdate);
 
         var animeUpdateOptional = repository.findById(animeToUpdate.getId());
         Assertions.assertThat(animeUpdateOptional).isPresent();

@@ -1,5 +1,6 @@
 package academy.devdojo.service;
 
+import academy.devdojo.commons.AnimeUtils;
 import academy.devdojo.domain.Anime;
 import academy.devdojo.repository.AnimeHardCodedRepository;
 import org.assertj.core.api.Assertions;
@@ -22,19 +23,17 @@ class AnimeServiceTest {
     @InjectMocks
     private AnimeService service;
 
+    @InjectMocks
+    private AnimeUtils animeUtils;
+
     @Mock
     private AnimeHardCodedRepository repository;
 
-    private final List<Anime> animeList = new ArrayList<>();
+    private List<Anime> animeList;
 
     @BeforeEach
     void setUp() {
-        animeList.addAll(
-            List.of(
-                Anime.builder().id(1L).name("Naruto").build(),
-                Anime.builder().id(2L).name("One Piece").build(),
-                Anime.builder().id(3L).name("Attack on Titan").build()
-        ));
+        animeList = new ArrayList<>(animeUtils.createAnimeList());
     }
 
     @Test
@@ -67,7 +66,7 @@ class AnimeServiceTest {
     @DisplayName("Save anime")
     void save() {
         var animeToBeSaved = Anime.builder().name("Dragon Ball Z").build();
-        var savedAnime = Anime.builder().id(99L).name("Dragon Ball Z").build();
+        var savedAnime = animeUtils.newAnimeToSave();
         BDDMockito.when(repository.save(animeToBeSaved)).thenReturn(savedAnime);
         var anime = service.save(animeToBeSaved);
         Assertions.assertThat(anime).isNotNull().isEqualTo(savedAnime);

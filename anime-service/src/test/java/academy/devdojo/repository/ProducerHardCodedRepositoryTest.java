@@ -27,6 +27,7 @@ class ProducerHardCodedRepositoryTest  {
 
     @Mock
     private ProducerData producerData;
+
     private List<Producer> producersList;
 
     @BeforeEach
