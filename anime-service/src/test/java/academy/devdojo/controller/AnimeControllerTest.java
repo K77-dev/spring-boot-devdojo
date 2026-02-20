@@ -1,8 +1,8 @@
 package academy.devdojo.controller;
 
-import academy.devdojo.domain.Producer;
-import academy.devdojo.repository.ProducerData;
-import academy.devdojo.repository.ProducerHardCodedRepository;
+import academy.devdojo.domain.Anime;
+import academy.devdojo.repository.AnimeData;
+import academy.devdojo.repository.AnimeHardCodedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,47 +26,47 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@WebMvcTest(controllers = ProducerController.class)
+@WebMvcTest(controllers = AnimeController.class)
 
 @ComponentScan(basePackages = "academy.devdojo")
-//@Import({ProducerMapperImpl.class, ProducerService.class, ProducerHardCodedRepository.class, ProducerData.class})
-class ProducerControllerTest {
+//@Import({AnimeMapperImpl.class, AnimeService.class, AnimeHardCodedRepository.class, AnimeData.class})
+class AnimeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private ProducerData producerData;
+    private AnimeData animeData;
 
     @SpyBean
-    private ProducerHardCodedRepository repository;
+    private AnimeHardCodedRepository repository;
 
     @Autowired
     private ResourceLoader resourceLoader;
 
-    private final List<Producer> producersList = new java.util.ArrayList<>();
+    private final List<Anime> animesList = new java.util.ArrayList<>();
 
     @BeforeEach
     void init() {
         var dateTime = "2026-02-16T15:09:48.083599";
         var formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         var localDateTime = LocalDateTime.parse(dateTime, formatter);
-        producersList.addAll(
+        animesList.addAll(
                 List.of(
-                        Producer.builder().id(1L).name("Ufotable").createdAt(localDateTime).build(),
-                        Producer.builder().id(2L).name("Wit Studio").createdAt(localDateTime).build(),
-                        Producer.builder().id(3L).name("Studio Guibli").createdAt(localDateTime).build()
+                        Anime.builder().id(1L).name("Full Metal Brotherhood").build(),
+                        Anime.builder().id(2L).name("Steins Gate").build(),
+                        Anime.builder().id(3L).name("Mashle").build()
                 )
         );
     }
 
     @Test
-    @DisplayName("GET v1/producers - Find all producers")
+    @DisplayName("GET v1/animes - Find all animes")
     void findAll() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
-        var response = readResourceFile("producer/producer-get-response-list.json");
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
+        var response = readResourceFile("anime/anime-get-response-list.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes"))
             .andDo(MockMvcResultHandlers.print()) // show the request and response in the console. Not necessary, but useful for debugging.
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(response));
@@ -74,63 +74,63 @@ class ProducerControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/producers/filter?name=Ufotable - Find all producers")
+    @DisplayName("GET v1/animes/filter?name=Mashle - Find all animes")
     void findByName() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
-        var response = readResourceFile("producer/producer-get-filter-name-ufotable-response.json");
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
+        var response = readResourceFile("anime/anime-get-filter-name-mashle-response.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers/filter").param("name", "Ufotable"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/filter").param("name", "Mashle"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
-    @DisplayName("GET v1/producers/filter?name=Ufotable - Return empty list when producer not found")
+    @DisplayName("GET v1/animes/filter?name=X - Return empty list when anime not found")
     void findByName_EmptyList() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
-        var response = readResourceFile("producer/producer-get-filter-name-x-response.json");
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
+        var response = readResourceFile("anime/anime-get-filter-name-x-response.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers/filter").param("name", "X"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/filter").param("name", "X"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
-    @DisplayName("GET v1/producers/{id} - Find producer by id")
+    @DisplayName("GET v1/animes/{id} - Find anime by id")
     void findById() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
-        var response = readResourceFile("producer/producer-get-by-id-response.json");
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
+        var response = readResourceFile("anime/anime-get-by-id-response.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers/{id}", 1L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/{id}", 1L))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
-    @DisplayName("GET v1/producers/99 - Return 404 when producer not found")
+    @DisplayName("GET v1/animes/99 - Return 404 when anime not found")
     void findById_404() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers/{id}", 99L))
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/{id}", 99L))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+                .andExpect(MockMvcResultMatchers.status().reason("Anime not found!"));
     }
 
     @Test
-    @DisplayName("POST v1/producers/ - Save producer")
+    @DisplayName("POST v1/animes/ - Save anime")
     void save() throws Exception {
-        var request = readResourceFile("producer/producer-post-save-request.json");
-        var response = readResourceFile("producer/producer-post-save-response.json");
+        var request = readResourceFile("anime/anime-post-save-request.json");
+        var response = readResourceFile("anime/anime-post-save-response.json");
 
-        var producerToSave = Producer.builder().id(99L).name("MAPPA").createdAt(LocalDateTime.now()).build();
-        BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(producerToSave);
+        var animeToSave = Anime.builder().id(99L).name("Overload").build();
+        BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(animeToSave);
 
         mockMvc.perform(MockMvcRequestBuilders
-                    .post("/v1/producers")
+                    .post("/v1/animes")
                     .content(request)
                     .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -141,14 +141,14 @@ class ProducerControllerTest {
     }
 
     @Test
-    @DisplayName("PUT v1/producers/ - Update producer")
+    @DisplayName("PUT v1/animes/ - Update anime")
     void update() throws Exception {
-        var request = readResourceFile("producer/producer-put-update-request.json");
+        var request = readResourceFile("anime/anime-put-update-request.json");
 
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/v1/producers")
+                        .put("/v1/animes")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -157,46 +157,46 @@ class ProducerControllerTest {
     }
 
     @Test
-    @DisplayName("PUT v1/producers/ - Update producer where producer is not found")
-    void updateWhenProducerIsNotFound() throws Exception {
-        var request = readResourceFile("producer/producer-put-update-request-404.json");
+    @DisplayName("PUT v1/animes/ - Update anime where anime is not found")
+    void updateWhenAnimeIsNotFound() throws Exception {
+        var request = readResourceFile("anime/anime-put-update-request-404.json");
 
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/v1/producers")
+                        .put("/v1/animes")
                         .content(request)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+                .andExpect(MockMvcResultMatchers.status().reason("Anime not found!"));
     }
 
     @Test
-    @DisplayName("\"PUT v1/producers/1 - Delete producer")
+    @DisplayName("\"PUT v1/animes/1 - Delete anime")
     void delete() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
-        var id = producersList.getFirst().getId();
+        var id = animesList.getFirst().getId();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/v1/producers/{id}", id)
+                        .delete("/v1/animes/{id}", id)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
-    @DisplayName("\"PUT v1/producers/1 - Delete producer where producer is not found")
-    void delete_WhenProducerIsNotFound() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
+    @DisplayName("\"PUT v1/animes/1 - Delete anime where anime is not found")
+    void delete_WhenAnimeIsNotFound() throws Exception {
+        BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/v1/producers/{id}", 999L)
+                        .delete("/v1/animes/{id}", 999L)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+                .andExpect(MockMvcResultMatchers.status().reason("Anime not found!"));
     }
 
 

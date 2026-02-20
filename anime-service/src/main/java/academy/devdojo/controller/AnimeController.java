@@ -66,8 +66,8 @@ public class AnimeController {
         log.debug("Request to save anime: {}", animePostRequest);
 
         var anime = mapper.toAnime(animePostRequest);
-        service.save(anime);
-        var response = mapper.toAnimePostResponse(anime);
+        var animeToSave = service.save(anime);
+        var response = mapper.toAnimePostResponse(animeToSave);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
