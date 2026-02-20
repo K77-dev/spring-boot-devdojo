@@ -1,5 +1,6 @@
 package academy.devdojo.repository;
 
+import academy.devdojo.commons.ProducerUtils;
 import academy.devdojo.domain.Producer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,20 +22,17 @@ class ProducerHardCodedRepositoryTest  {
     @InjectMocks
     private ProducerHardCodedRepository repository;
 
+    @InjectMocks
+    private ProducerUtils producerUtils;
+
     @Mock
     private ProducerData producerData;
-    private final List<Producer> producersDataList = new ArrayList<>();
+    private List<Producer> producersList;
 
     @BeforeEach
     void init(){
-        producersDataList.addAll(
-                List.of(
-                        Producer.builder().id(1L).name("Ufotable").createdAt(LocalDateTime.now()).build(),
-                        Producer.builder(  ).id(2L).name("Wit Studio").createdAt(LocalDateTime.now()).build(),
-                        Producer.builder().id(3L).name("Studio Guibli ").createdAt(LocalDateTime.now()).build()
-                )
-        );
-        BDDMockito.when(producerData.getProducers()).thenReturn(producersDataList);
+        producersList = new ArrayList<>(producerUtils.createProducerList());
+        BDDMockito.when(producerData.getProducers()).thenReturn(producersList);
     }
 
     @Test
@@ -48,7 +46,7 @@ class ProducerHardCodedRepositoryTest  {
     @Test
     @DisplayName("findById returns producer with a given Id")
     void findById(){
-        var exprectedProducer  = producersDataList.getFirst();
+        var exprectedProducer  = producersList.getFirst();
         var producers = repository.findById(exprectedProducer.getId());
 
         Assertions.assertThat(producers).contains(exprectedProducer);
@@ -57,7 +55,7 @@ class ProducerHardCodedRepositoryTest  {
     @Test
     @DisplayName("findByName returns producer with a given Name")
     void findByName(){
-        var exprectedProducer  = producersDataList.getFirst();
+        var exprectedProducer  = producersList.getFirst();
         var producers = repository.findByName(exprectedProducer.getName());
 
         Assertions.assertThat(producers).contains(exprectedProducer);
@@ -66,7 +64,7 @@ class ProducerHardCodedRepositoryTest  {
     @Test
     @DisplayName("findByName returns producer with a given Name")
     void save(){
-        var producerToSave = Producer.builder().id(99L).name("MAPA").createdAt(LocalDateTime.now()).build();
+        var producerToSave = producerUtils.newProducerToSave();
         var producer = repository.save(producerToSave);
         Assertions.assertThat(producer).isEqualTo(producerToSave).hasNoNullFieldsOrProperties();
 
@@ -77,20 +75,20 @@ class ProducerHardCodedRepositoryTest  {
     @Test
     @DisplayName("delete removes a producer")
     void delete(){
-         var producerToDelete  = producersDataList.getFirst();
+         var producerToDelete  = producersList.getFirst();
         repository.delete(producerToDelete);
 
-        Assertions.assertThat(producersDataList).doesNotContain(producerToDelete);
+        Assertions.assertThat(producersList).doesNotContain(producerToDelete);
     }
 
     @Test
     @DisplayName("update a producer")
     void update(){
-        var producerToUpdate = producersDataList.getFirst();
+        var producerToUpdate = producersList.getFirst();
         producerToUpdate.setName("Aniplex");
         repository.update(producerToUpdate );
 
-        Assertions.assertThat(producersDataList).contains(producerToUpdate);
+        Assertions.assertThat(producersList).contains(producerToUpdate);
 
         var producerUpdateOptional = repository.findById(producerToUpdate.getId());
         Assertions.assertThat(producerUpdateOptional).isPresent();

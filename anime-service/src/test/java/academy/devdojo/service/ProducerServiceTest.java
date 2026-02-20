@@ -1,5 +1,6 @@
 package academy.devdojo.service;
 
+import academy.devdojo.commons.ProducerUtils;
 import academy.devdojo.domain.Producer;
 import academy.devdojo.repository.ProducerHardCodedRepository;
 import org.assertj.core.api.Assertions;
@@ -23,20 +24,17 @@ class ProducerServiceTest {
     @InjectMocks
     private ProducerService service;
 
+    @InjectMocks
+    private ProducerUtils producerUtils;
+
     @Mock
     private ProducerHardCodedRepository repository;
 
-    private final List<Producer> producerList = new ArrayList<>();
+    private List<Producer> producerList;
 
     @BeforeEach
     void setUp() {
-        producerList.addAll(
-                List.of(
-                        Producer.builder().id(1L).name("Mappa").createdAt(LocalDateTime.now()).build(),
-                        Producer.builder().id(2L).name("Kyoto Animation").createdAt(LocalDateTime.now()).build(),
-                        Producer.builder().id(3L).name("Madhouse").createdAt(LocalDateTime.now()).build()
-                )
-        );
+        producerList = new ArrayList<>(producerUtils.createProducerList());
     }
 
     @Test
@@ -68,7 +66,7 @@ class ProducerServiceTest {
     @Test
     @DisplayName("Save producer")
     void save() {
-        var producerToSave = Producer.builder().id(99L).name("Bones").createdAt(LocalDateTime.now()).build();
+        var producerToSave = producerUtils.newProducerToSave();
         BDDMockito.when(repository.save(producerToSave)).thenReturn(producerToSave);
         var savedProducer = service.save(producerToSave);
         Assertions.assertThat(savedProducer).isNotNull().isEqualTo(producerToSave).hasNoNullFieldsOrProperties();
