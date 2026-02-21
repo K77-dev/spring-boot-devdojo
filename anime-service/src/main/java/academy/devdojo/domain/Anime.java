@@ -1,6 +1,9 @@
 package academy.devdojo.domain;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +21,11 @@ public class Anime {
 
     static {
         animes.addAll(
-            List.of(
-                new Anime(1L, "Naturo"),
-                new Anime(2L, "Goku"),
-                new Anime(3L, "One Piece")
-            )
+                List.of(
+                        new Anime(1L, "Naturo"),
+                        new Anime(2L, "Goku"),
+                        new Anime(3L, "One Piece")
+                )
         );
     }
 }

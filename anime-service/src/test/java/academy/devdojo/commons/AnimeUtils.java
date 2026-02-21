@@ -16,7 +16,7 @@ public class AnimeUtils {
         );
     }
 
-    public Anime newAnimeToSave(){
+    public Anime newAnimeToSave() {
         return Anime.builder().id(99L).name("Dragon Ball Z").build();
     }
 }

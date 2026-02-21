@@ -10,35 +10,35 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class AnimeHardCodedRepository {
-    
+
     private final AnimeData animeData;
 
-    public List<Anime> findAll(){
+    public List<Anime> findAll() {
         return animeData.getAnimes();
     }
 
-    public Optional<Anime> findById(Long id){
+    public Optional<Anime> findById(Long id) {
         return animeData.getAnimes().stream()
-                .filter( n -> n.getId().equals(id))
+                .filter(n -> n.getId().equals(id))
                 .findFirst();
     }
 
-    public List<Anime> findByName(String name){
+    public List<Anime> findByName(String name) {
         return animeData.getAnimes().stream()
                 .filter(n -> n.getName().equalsIgnoreCase(name))
                 .toList();
     }
 
-    public Anime save(Anime anime){
+    public Anime save(Anime anime) {
         animeData.getAnimes().add(anime);
         return anime;
     }
 
-    public void delete(Anime anime){
+    public void delete(Anime anime) {
         animeData.getAnimes().remove(anime);
     }
 
-    public void update(Anime anime){
+    public void update(Anime anime) {
         delete(anime);
         save(anime);
     }

@@ -44,7 +44,7 @@ class AnimeControllerTest {
 
     @Autowired
     private AnimeUtils animeUtils;
-    
+
     @Autowired
     FileUtils fileUtils;
 
@@ -63,9 +63,9 @@ class AnimeControllerTest {
         var response = fileUtils.readResourceFile("anime/anime-get-response-list.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE))
-            .andDo(MockMvcResultHandlers.print()) // show the request and response in the console. Not necessary, but useful for debugging.
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().json(response));
+                .andDo(MockMvcResultHandlers.print()) // show the request and response in the console. Not necessary, but useful for debugging.
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
 
     }
 
@@ -75,7 +75,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         var response = fileUtils.readResourceFile("anime/anime-get-filter-name-mashle-response.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE+"/filter").param("name", "Mashle"))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE + "/filter").param("name", "Mashle"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -87,7 +87,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         var response = fileUtils.readResourceFile("anime/anime-get-filter-name-x-response.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE+"/filter").param("name", "X"))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE + "/filter").param("name", "X"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -99,7 +99,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
         var response = fileUtils.readResourceFile("anime/anime-get-by-id-response.json");
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE+"/{id}", 1L))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE + "/{id}", 1L))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -110,7 +110,7 @@ class AnimeControllerTest {
     void findById_404() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE+"/{id}", 99L))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL_BASE + "/{id}", 99L))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Anime not found!"));
@@ -126,9 +126,9 @@ class AnimeControllerTest {
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(animeToSave);
 
         mockMvc.perform(MockMvcRequestBuilders
-                    .post(URL_BASE)
-                    .content(request)
-                    .contentType(MediaType.APPLICATION_JSON)
+                        .post(URL_BASE)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
@@ -176,7 +176,7 @@ class AnimeControllerTest {
 
         var id = animesList.getFirst().getId();
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete(URL_BASE+"/{id}", id)
+                        .delete(URL_BASE + "/{id}", id)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -188,7 +188,7 @@ class AnimeControllerTest {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete(URL_BASE+"/{id}", 999L)
+                        .delete(URL_BASE + "/{id}", 999L)
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())

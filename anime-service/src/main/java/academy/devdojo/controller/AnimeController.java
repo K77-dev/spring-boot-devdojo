@@ -42,7 +42,7 @@ public class AnimeController {
     }
 
     @GetMapping("filter")
-    public ResponseEntity<List<AnimeGetResponse>> filter(@RequestParam String name){
+    public ResponseEntity<List<AnimeGetResponse>> filter(@RequestParam String name) {
         log.debug("Request received to list all animes, param name '{}'", name);
 
         var anime = service.findByName(name);
@@ -52,7 +52,7 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AnimeGetResponse> findById(@PathVariable Long id){
+    public ResponseEntity<AnimeGetResponse> findById(@PathVariable Long id) {
         log.debug("Request to find anime by id: {}", id);
 
         var anime = service.findById(id);
@@ -62,7 +62,7 @@ public class AnimeController {
     }
 
     @PostMapping
-    public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest){
+    public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
         log.debug("Request to save anime: {}", animePostRequest);
 
         var anime = mapper.toAnime(animePostRequest);
@@ -73,7 +73,7 @@ public class AnimeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         log.debug("Request to delete anime by id: {}", id);
 
         var anime = service.findById(id);
@@ -83,7 +83,7 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest){
+    public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
         log.debug("Request to update anime: {}", animePutRequest);
 
         var anime = mapper.toAnime(animePutRequest);

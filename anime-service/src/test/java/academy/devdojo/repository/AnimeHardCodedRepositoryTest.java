@@ -30,14 +30,14 @@ class AnimeHardCodedRepositoryTest {
     private List<Anime> animeList;
 
     @BeforeEach
-    void init(){
+    void init() {
         animeList = new ArrayList<>(animeUtils.createAnimeList());
         BDDMockito.when(animeData.getAnimes()).thenReturn(animeList);
     }
 
     @Test
     @DisplayName("findAll return a list with all animes")
-    void findAll(){
+    void findAll() {
         var animes = repository.findAll();
 
         Assertions.assertThat(animeList).isNotNull().hasSameElementsAs(animes);
@@ -45,8 +45,8 @@ class AnimeHardCodedRepositoryTest {
 
     @Test
     @DisplayName("findById returns anime with a given Id")
-    void findById(){
-        var exprectedAnime  = animeList.getFirst();
+    void findById() {
+        var exprectedAnime = animeList.getFirst();
         var animes = repository.findById(exprectedAnime.getId());
 
         Assertions.assertThat(animes).contains(exprectedAnime);
@@ -54,8 +54,8 @@ class AnimeHardCodedRepositoryTest {
 
     @Test
     @DisplayName("findByName returns anime with a given Name")
-    void findByName(){
-        var exprectedAnime  = animeList.getFirst();
+    void findByName() {
+        var exprectedAnime = animeList.getFirst();
         var animes = repository.findByName(exprectedAnime.getName());
 
         Assertions.assertThat(animes).contains(exprectedAnime);
@@ -63,7 +63,7 @@ class AnimeHardCodedRepositoryTest {
 
     @Test
     @DisplayName("findByName returns anime with a given Name")
-    void save(){
+    void save() {
         var animeToSave = animeUtils.newAnimeToSave();
         var anime = repository.save(animeToSave);
         Assertions.assertThat(anime).isEqualTo(animeToSave).hasNoNullFieldsOrProperties();
@@ -74,8 +74,8 @@ class AnimeHardCodedRepositoryTest {
 
     @Test
     @DisplayName("delete removes a anime")
-    void delete(){
-         var animeToDelete  = animeList.getFirst();
+    void delete() {
+        var animeToDelete = animeList.getFirst();
         repository.delete(animeToDelete);
 
         Assertions.assertThat(animeList).doesNotContain(animeToDelete);
@@ -83,10 +83,10 @@ class AnimeHardCodedRepositoryTest {
 
     @Test
     @DisplayName("update a anime")
-    void update(){
+    void update() {
         var animeToUpdate = animeList.getFirst();
         animeToUpdate.setName("Driffers");
-        repository.update(animeToUpdate );
+        repository.update(animeToUpdate);
 
         Assertions.assertThat(animeList).contains(animeToUpdate);
 

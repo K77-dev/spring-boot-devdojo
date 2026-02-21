@@ -15,30 +15,30 @@ public class ProducerService {
 
     private final ProducerHardCodedRepository repository;
 
-    public List<Producer> findAll(){
+    public List<Producer> findAll() {
         return repository.findAll();
     }
 
-    public Producer findById(Long id){
+    public Producer findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found!"));
     }
 
-    public List<Producer> findByName(String name){
+    public List<Producer> findByName(String name) {
         return repository.findByName(name);
     }
 
-    public Producer save(Producer producer){
+    public Producer save(Producer producer) {
         return repository.save(producer);
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         repository.delete(findById(id));
     }
 
-    public void update(Producer producerToUpdate){
+    public void update(Producer producerToUpdate) {
         var producer = findById(producerToUpdate.getId());
         producerToUpdate.setCreatedAt(producer.getCreatedAt());
-         repository.update(producerToUpdate);
+        repository.update(producerToUpdate);
     }
 }

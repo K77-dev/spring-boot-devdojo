@@ -1,6 +1,9 @@
 package academy.devdojo.domain;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,11 +23,11 @@ public class Producer {
 
     static {
         producers.addAll(
-            List.of(
-                Producer.builder().id(1L).name("Mappa").createdAt(LocalDateTime.now()).build(),
-                Producer.builder().id(2L).name("Kyoto Animation").createdAt(LocalDateTime.now()).build(),
-                Producer.builder().id(3L).name("Madhouse").createdAt(LocalDateTime.now()).build()
-            )
+                List.of(
+                        Producer.builder().id(1L).name("Mappa").createdAt(LocalDateTime.now()).build(),
+                        Producer.builder().id(2L).name("Kyoto Animation").createdAt(LocalDateTime.now()).build(),
+                        Producer.builder().id(3L).name("Madhouse").createdAt(LocalDateTime.now()).build()
+                )
         );
     }
 }

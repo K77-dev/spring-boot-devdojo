@@ -15,7 +15,7 @@ public class ProducerData {
         producers.addAll(
                 List.of(
                         Producer.builder().id(1L).name("Mappa").createdAt(LocalDateTime.now()).build(),
-                        Producer.builder(  ).id(2L).name("Kyoto Animation").createdAt(LocalDateTime.now()).build(),
+                        Producer.builder().id(2L).name("Kyoto Animation").createdAt(LocalDateTime.now()).build(),
                         Producer.builder().id(3L).name("Madhouse").createdAt(LocalDateTime.now()).build()
                 )
         );
