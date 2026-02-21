@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(controllers = AnimeController.class)
-
-@ComponentScan(basePackages = "academy.devdojo")
+@ComponentScan(basePackages = {"academy.devdojo"})
 //@Import({AnimeMapperImpl.class, AnimeService.class, AnimeHardCodedRepository.class, AnimeData.class})
 class AnimeControllerTest {
 

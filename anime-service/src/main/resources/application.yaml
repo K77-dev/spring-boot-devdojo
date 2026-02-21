@@ -17,3 +17,8 @@ server:
 logging:
   level:
     academy.devdojo: debug
+
+database:
+  url: jdbc:mysql://localhost:3306/anime_db
+  username: devdojo
+  password: devdojo

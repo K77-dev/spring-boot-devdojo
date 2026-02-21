@@ -1,0 +1,4 @@
+database:
+  url: jdbc:mongodb://localhost:27017/anime_test
+  username: devdojo_test
+  password: devdojo_test

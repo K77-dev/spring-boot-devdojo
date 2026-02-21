@@ -1,9 +1,11 @@
-package external.dependency;
+package academy.devdojo.config;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
 @AllArgsConstructor
+@Getter
 @ToString
 public class Connection {
     private String host;
