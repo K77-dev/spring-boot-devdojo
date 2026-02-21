@@ -19,6 +19,6 @@ logging:
     academy.devdojo: debug
 
 database:
-  url: jdbc:mysql://localhost:3306/anime_db
-  username: devdojo
-  password: devdojo
+  url: ${LOCAL_URL:localhost:3306/anime}:${DB_PORT:3306}
+  username: ${LOCAL_USERNAME:kelsen}
+  password: ${LOCAL_PASSWORD:brito}
